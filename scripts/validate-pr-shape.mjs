@@ -14,35 +14,36 @@ function readJsonFromHead(filePath) {
 }
 
 function readJsonFromBase(filePath) {
-  const raw = git(['show', `${base}:${filePath}`]);
-  return JSON.parse(raw);
+  return JSON.parse(git(['show', `${base}:${filePath}`]));
 }
 
-function byId(items) {
-  return new Map(items.map((item) => [item.id, item]));
+function keyFor(filePath, item) {
+  if (filePath === 'community-css-themes.json') return item.name;
+  if (filePath === 'desktop-releases.json') return item.version;
+  return item.id;
 }
 
-function changedEntryIds(baseItems, headItems) {
-  const before = byId(baseItems);
-  const after = byId(headItems);
-  const ids = new Set([...before.keys(), ...after.keys()]);
-  const changed = [];
-  for (const id of ids) {
-    const left = before.has(id) ? JSON.stringify(before.get(id)) : null;
-    const right = after.has(id) ? JSON.stringify(after.get(id)) : null;
-    if (left !== right) changed.push(id);
-  }
-  return changed;
-}
-
-function validateSingleRegistryChange(filePath, label) {
+function changedEntryKeys(filePath) {
   const before = readJsonFromBase(filePath);
   const after = readJsonFromHead(filePath);
-  const changed = changedEntryIds(before, after);
-  if (changed.length > 1) {
-    throw new Error(`${label}: one PR may change only one entry. Changed: ${changed.join(', ')}`);
+  const beforeMap = new Map(before.map((item) => [keyFor(filePath, item), item]));
+  const afterMap = new Map(after.map((item) => [keyFor(filePath, item), item]));
+  const keys = new Set([...beforeMap.keys(), ...afterMap.keys()]);
+  const changed = [];
+  for (const key of keys) {
+    const left = beforeMap.has(key) ? JSON.stringify(beforeMap.get(key)) : null;
+    const right = afterMap.has(key) ? JSON.stringify(afterMap.get(key)) : null;
+    if (left !== right) changed.push(key);
   }
   return changed;
+}
+
+function ensureAppended(filePath, changedKey) {
+  const after = readJsonFromHead(filePath);
+  const last = after[after.length - 1];
+  if (keyFor(filePath, last) !== changedKey) {
+    throw new Error(`${filePath}: new submissions must be appended to the end of the list.`);
+  }
 }
 
 const changedFiles = git(['diff', '--name-only', `${base}...HEAD`])
@@ -55,31 +56,26 @@ if (changedFiles.length === 0) {
   process.exit(0);
 }
 
-const pluginRegistryChanged = changedFiles.includes('registry/community-plugins.json');
-const themeRegistryChanged = changedFiles.includes('registry/community-themes.json');
-const desktopReleaseChanged = changedFiles.includes('registry/desktop-releases.json');
+const submissionFiles = ['community-plugins.json', 'community-css-themes.json', 'desktop-releases.json'];
+const changedSubmissionFiles = submissionFiles.filter((file) => changedFiles.includes(file));
 
-const registryChangeCount = [pluginRegistryChanged, themeRegistryChanged, desktopReleaseChanged].filter(Boolean).length;
-
-if (registryChangeCount > 1) {
-  throw new Error('A PR may change only one registry type: plugin, theme, or desktop release.');
+if (changedSubmissionFiles.length > 1) {
+  throw new Error('A submission PR may change only one registry file.');
 }
 
-if (pluginRegistryChanged) {
-  validateSingleRegistryChange('registry/community-plugins.json', 'Plugin registry');
-}
-
-if (themeRegistryChanged) {
-  validateSingleRegistryChange('registry/community-themes.json', 'Theme registry');
-}
-
-if (desktopReleaseChanged) {
-  validateSingleRegistryChange('registry/desktop-releases.json', 'Desktop release registry');
-}
-
-const generatedDistChanged = changedFiles.some((file) => file.startsWith('dist/') && file.endsWith('.json'));
-if (registryChangeCount > 0 && !generatedDistChanged) {
-  throw new Error('Registry changes must include rebuilt dist/*.json files. Run npm run build:dist.');
+if (changedSubmissionFiles.length === 1) {
+  const filePath = changedSubmissionFiles[0];
+  const changed = changedEntryKeys(filePath);
+  if (changed.length > 1) {
+    throw new Error(`${filePath}: one PR may change only one entry. Changed: ${changed.join(', ')}`);
+  }
+  if (changed.length === 1) {
+    const before = readJsonFromBase(filePath);
+    const after = readJsonFromHead(filePath);
+    if (after.length > before.length) {
+      ensureAppended(filePath, changed[0]);
+    }
+  }
 }
 
 console.log('PR shape validation passed.');

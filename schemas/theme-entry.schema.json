@@ -1,15 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/schemas/theme-entry.schema.json",
-  "title": "Thrive Theme Registry Entry",
+  "title": "Thrive Community Theme Entry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "author", "description", "repo", "modes", "reviewTier"],
+  "required": ["name", "author", "repo", "screenshot", "modes"],
   "properties": {
-    "id": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9_-]+$"
-    },
     "name": {
       "type": "string",
       "minLength": 1,
@@ -20,49 +16,29 @@
       "minLength": 1,
       "maxLength": 80
     },
-    "description": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 220
-    },
     "repo": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "screenshot": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
     },
     "modes": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["light", "dark"]
+        "enum": ["dark", "light"]
       },
       "uniqueItems": true,
       "minItems": 1
     },
-    "screenshots": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "maxItems": 8
+    "publish": {
+      "type": "boolean"
     },
-    "reviewTier": {
-      "type": "string",
-      "enum": ["official", "verified", "community"]
-    },
-    "minAppVersion": {
-      "type": "string"
-    },
-    "homepage": {
-      "type": "string",
-      "format": "uri"
-    },
-    "packageUrl": {
-      "type": "string",
-      "format": "uri"
-    },
-    "sha256": {
-      "type": "string",
-      "pattern": "^[a-fA-F0-9]{64}$"
+    "legacy": {
+      "type": "boolean"
     }
   }
 }

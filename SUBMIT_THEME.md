@@ -14,20 +14,19 @@ Themes must be visual packages. They must not execute JavaScript or modify user 
 
 ## Registry Entry
 
-Append one entry to `registry/community-themes.json`:
+Append one entry to the end of `community-css-themes.json`:
 
 ```json
 {
-  "id": "clean-studio",
-  "name": "Clean Studio",
+  "name": "Example Theme",
   "author": "Your Name",
-  "description": "A focused theme for content creation.",
-  "repo": "owner/clean-studio",
-  "modes": ["light", "dark"],
-  "screenshots": ["screenshots/home-light.png"],
-  "reviewTier": "community"
+  "repo": "owner/example-theme",
+  "screenshot": "screenshot.png",
+  "modes": ["dark", "light"]
 }
 ```
+
+This follows the Obsidian-style theme registry shape.
 
 ## Review
 

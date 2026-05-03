@@ -1,21 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/schemas/plugin-entry.schema.json",
-  "title": "Thrive Plugin Registry Entry",
+  "title": "Thrive Community Plugin Entry",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "author", "description", "repo", "category", "permissions", "reviewTier"],
+  "required": ["id", "name", "author", "description", "repo"],
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[A-Za-z0-9_-]+$"
+      "pattern": "^[a-z0-9-_]+$"
     },
     "name": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 80
-    },
-    "displayName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 80
@@ -28,54 +23,11 @@
     "description": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 220
+      "maxLength": 250
     },
     "repo": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
-    },
-    "category": {
-      "type": "string",
-      "enum": ["ai", "writing", "knowledge", "media", "download", "export", "automation", "connector", "home", "utility"]
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^[A-Za-z0-9_-]+$"
-      },
-      "uniqueItems": true,
-      "maxItems": 12
-    },
-    "permissions": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "reviewTier": {
-      "type": "string",
-      "enum": ["official", "verified", "community"]
-    },
-    "minAppVersion": {
-      "type": "string"
-    },
-    "homepage": {
-      "type": "string",
-      "format": "uri"
-    },
-    "fundingUrl": {
-      "type": "string",
-      "format": "uri"
-    },
-    "packageUrl": {
-      "type": "string",
-      "format": "uri"
-    },
-    "sha256": {
-      "type": "string",
-      "pattern": "^[a-fA-F0-9]{64}$"
     }
   }
 }

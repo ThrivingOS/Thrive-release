@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate-registry.mjs",
-    "build:dist": "node scripts/build-dist-index.mjs",
     "validate:plugin-template": "cd templates/plugin-template && npm run validate",
-    "validate:pr": "node scripts/validate-pr-shape.mjs"
+    "validate:pr": "node scripts/validate-pr-shape.mjs",
+    "format": "prettier --write \"community*.json\" \"desktop-releases.json\""
   },
   "engines": {
     "node": ">=22 <23"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
   }
 }

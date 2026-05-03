@@ -50,7 +50,7 @@ If you enable the MCP example, add `mcp.server` and keep the MCP tools schema-fi
 After publishing a GitHub Release with the `.thriveplugin` package, submit a PR to `ThrivingOS/Thrive-release` and append one entry to:
 
 ```text
-registry/community-plugins.json
+community-plugins.json
 ```
 
 Read the root repository `SUBMIT_PLUGIN.md` before submitting.
