@@ -21,6 +21,23 @@ CHANGELOG.md
 LICENSE
 ```
 
+## Template
+
+Start from the official template:
+
+```text
+templates/plugin-template/
+```
+
+Copy it into a new repository, update `.thrive-plugin/plugin.json`, then run:
+
+```bash
+npm run validate
+npm run pack
+```
+
+The template includes a Skill example, optional MCP server example, homepage widget example, and packaging script.
+
 ## Registry Entry
 
 Append one entry to `registry/community-plugins.json`:
@@ -39,6 +56,8 @@ Append one entry to `registry/community-plugins.json`:
   "reviewTier": "community"
 }
 ```
+
+See [PLUGIN_PR_STANDARD.md](PLUGIN_PR_STANDARD.md) for the full pull request standard.
 
 ## Package Requirements
 

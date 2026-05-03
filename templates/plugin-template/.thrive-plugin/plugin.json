@@ -1,0 +1,50 @@
+{
+  "name": "example-plugin",
+  "version": "0.1.0",
+  "description": "Example Thrive plugin with a Skill and homepage extension.",
+  "minAppVersion": "1.11.0",
+  "skills": "./skills",
+  "mcpServers": "./mcp.json",
+  "permissions": {
+    "capabilities": [
+      "ai.skill",
+      "ui.home",
+      "pluginData.read"
+    ],
+    "approvalRequired": [],
+    "network": []
+  },
+  "interface": {
+    "displayName": "Example Plugin",
+    "shortDescription": "Template plugin for Thrive developers.",
+    "developerName": "Your Name",
+    "category": "utility",
+    "defaultPrompt": [
+      "Use the example plugin to suggest the next content task."
+    ]
+  },
+  "home": {
+    "widgets": [
+      {
+        "id": "example-home-card",
+        "title": "Example Plugin",
+        "subtitle": "A controlled homepage card from the plugin manifest.",
+        "kind": "prompt",
+        "label": "Ask Thrive",
+        "prompt": "Use the example plugin context and suggest one practical next step.",
+        "tone": "sky",
+        "order": 100
+      }
+    ],
+    "quickActions": [
+      {
+        "id": "example-action",
+        "label": "Plugin suggestion",
+        "target": "redclaw",
+        "prompt": "Use the example plugin and give me one concise suggestion.",
+        "order": 100
+      }
+    ],
+    "sidebarSections": []
+  }
+}

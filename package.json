@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "validate": "node scripts/validate-registry.mjs",
-    "build:dist": "node scripts/build-dist-index.mjs"
+    "build:dist": "node scripts/build-dist-index.mjs",
+    "validate:plugin-template": "cd templates/plugin-template && npm run validate"
   },
   "engines": {
     "node": ">=22 <23"

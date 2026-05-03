@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "example": {
+      "transport": "stdio",
+      "command": "node",
+      "args": ["./src/mcp-server.mjs"],
+      "enabled": false,
+      "oauth": {
+        "redbox": {
+          "approvalMode": "safe",
+          "toolTimeoutMs": 15000
+        }
+      }
+    }
+  }
+}

@@ -38,6 +38,14 @@ Read [SUBMIT_PLUGIN.md](SUBMIT_PLUGIN.md) and [DEVELOPER_POLICY.md](DEVELOPER_PO
 
 The plugin source and packaged releases should live in the plugin author's own GitHub repository. This registry stores metadata, review state, and links. It does not host unreviewed plugin source code.
 
+Start new plugins from:
+
+```text
+templates/plugin-template/
+```
+
+Plugin PR requirements are defined in [PLUGIN_PR_STANDARD.md](PLUGIN_PR_STANDARD.md).
+
 ## Submit A Theme
 
 To submit a theme, create a pull request that appends one entry to:
@@ -56,6 +64,7 @@ dist/      Generated app-facing marketplace indexes.
 schemas/   JSON schemas for registry and generated files.
 review/    Human review checklists and permission policy.
 scripts/   Local validation and dist generation scripts.
+templates/ Plugin and theme starter templates.
 .github/   PR templates, issue forms, and CI workflows.
 ```
 
@@ -64,6 +73,7 @@ scripts/   Local validation and dist generation scripts.
 ```bash
 npm run validate
 npm run build:dist
+npm run validate:plugin-template
 ```
 
 CI runs the same checks on pull requests.

@@ -16,5 +16,6 @@ jobs:
           node-version: 22
       - run: npm run validate
       - run: npm run build:dist
+      - run: npm run validate:plugin-template
       - name: Ensure generated indexes are committed
         run: git diff --exit-code -- dist
