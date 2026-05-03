@@ -1,0 +1,30 @@
+name: Theme submission help
+description: Ask for help before submitting a theme PR.
+title: "[Theme Submission]: "
+labels: ["theme", "submission"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Theme repository
+      description: GitHub owner/repo.
+      placeholder: owner/thrive-theme
+    validations:
+      required: true
+  - type: dropdown
+    id: modes
+    attributes:
+      label: Supported modes
+      options:
+        - Light
+        - Dark
+        - Light and dark
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything maintainers should know.
+    validations:
+      required: false

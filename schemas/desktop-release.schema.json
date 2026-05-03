@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/schemas/desktop-release.schema.json",
+  "title": "Thrive Desktop Release Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "releasedAt", "notes", "assets"],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "releasedAt": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "sha256": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{64}$"
+      }
+    }
+  }
+}

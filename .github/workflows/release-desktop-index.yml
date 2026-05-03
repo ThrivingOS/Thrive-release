@@ -1,0 +1,21 @@
+name: Validate desktop release metadata
+
+on:
+  pull_request:
+    paths:
+      - "registry/desktop-releases.json"
+      - "dist/desktop-releases.v1.json"
+      - "scripts/**"
+      - ".github/workflows/release-desktop-index.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm run validate
+      - run: npm run build:dist
+      - run: git diff --exit-code -- dist/desktop-releases.v1.json dist/marketplace.v1.json

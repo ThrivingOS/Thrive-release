@@ -1,0 +1,13 @@
+{
+  "name": "thrive-release-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-registry.mjs",
+    "build:dist": "node scripts/build-dist-index.mjs"
+  },
+  "engines": {
+    "node": ">=22 <23"
+  }
+}

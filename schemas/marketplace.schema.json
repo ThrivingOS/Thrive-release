@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/schemas/marketplace.schema.json",
+  "title": "Thrive Marketplace Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "plugins", "themes", "desktopReleases"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "plugins": {
+      "type": "array"
+    },
+    "themes": {
+      "type": "array"
+    },
+    "desktopReleases": {
+      "type": "array"
+    }
+  }
+}

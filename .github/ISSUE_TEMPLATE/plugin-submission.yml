@@ -1,0 +1,27 @@
+name: Plugin submission help
+description: Ask for help before submitting a plugin PR.
+title: "[Plugin Submission]: "
+labels: ["plugin", "submission"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Plugin repository
+      description: GitHub owner/repo.
+      placeholder: owner/thrive-plugin
+    validations:
+      required: true
+  - type: textarea
+    id: permissions
+    attributes:
+      label: Requested permissions
+      description: List requested Thrive permissions and why each one is needed.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything maintainers should know.
+    validations:
+      required: false
