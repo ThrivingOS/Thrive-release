@@ -13,8 +13,10 @@
 - [ ] The target repository is public and accessible.
 - [ ] The entry ID is unique.
 - [ ] Permissions match the declared feature set.
+- [ ] High-risk permissions are explained in this PR.
 - [ ] I ran `npm run validate`.
 - [ ] I ran `npm run build:dist`.
+- [ ] For plugin submissions, I read `PLUGIN_PR_STANDARD.md`.
 
 ## Notes For Reviewers
 

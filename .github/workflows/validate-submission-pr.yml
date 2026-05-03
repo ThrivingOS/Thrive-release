@@ -1,0 +1,31 @@
+name: Validate submission PR
+
+on:
+  pull_request:
+    paths:
+      - "registry/**"
+      - "dist/**"
+      - "scripts/**"
+      - "templates/plugin-template/**"
+      - "PLUGIN_PR_STANDARD.md"
+      - "SUBMIT_PLUGIN.md"
+      - ".github/workflows/validate-submission-pr.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch base branch
+        run: git fetch origin "${GITHUB_BASE_REF}"
+      - run: npm run validate
+      - run: npm run build:dist
+      - run: npm run validate:plugin-template
+      - run: npm run validate:pr
+      - name: Ensure generated indexes are committed
+        run: git diff --exit-code -- dist
