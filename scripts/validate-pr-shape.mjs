@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import process from 'node:process';
 
 const baseRef = process.env.GITHUB_BASE_REF || process.env.THRIVE_PR_BASE_REF || 'origin/main';
-const base = baseRef.startsWith('origin/') ? baseRef : `origin/${baseRef}`;
+const base = baseRef.startsWith('origin/') || baseRef === 'HEAD' || /^[0-9a-f]{7,40}$/i.test(baseRef)
+  ? baseRef
+  : `origin/${baseRef}`;
 
 function git(args) {
   return execFileSync('git', args, { encoding: 'utf8' }).trim();
