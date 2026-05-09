@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "wwud",
+    "name": "WWUD",
+    "author": "Jamailar",
+    "description": "What Would User Do decision modeling and preference learning for auditable user-aligned decisions.",
+    "repo": "Jamailar/wwud-skill"
+  }
+]
