@@ -16,7 +16,11 @@ function readJsonFromHead(filePath) {
 }
 
 function readJsonFromBase(filePath) {
-  return JSON.parse(git(['show', `${base}:${filePath}`]));
+  try {
+    return JSON.parse(git(['show', `${base}:${filePath}`]));
+  } catch {
+    return [];
+  }
 }
 
 function keyFor(filePath, item) {
@@ -58,7 +62,12 @@ if (changedFiles.length === 0) {
   process.exit(0);
 }
 
-const submissionFiles = ['community-plugins.json', 'community-css-themes.json', 'desktop-releases.json'];
+const submissionFiles = [
+  'community-plugins.json',
+  'community-skills.json',
+  'community-css-themes.json',
+  'desktop-releases.json',
+];
 const changedSubmissionFiles = submissionFiles.filter((file) => changedFiles.includes(file));
 
 if (changedSubmissionFiles.length > 1) {

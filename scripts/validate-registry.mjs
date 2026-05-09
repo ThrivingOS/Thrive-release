@@ -8,6 +8,9 @@ const files = {
   plugins: 'community-plugins.json',
   removedPlugins: 'community-plugins-removed.json',
   deprecatedPlugins: 'community-plugin-deprecation.json',
+  skills: 'community-skills.json',
+  removedSkills: 'community-skills-removed.json',
+  deprecatedSkills: 'community-skill-deprecation.json',
   themes: 'community-css-themes.json',
   removedThemes: 'community-css-themes-removed.json',
   desktopReleases: 'desktop-releases.json',
@@ -78,6 +81,25 @@ function validatePlugins(plugins) {
   assertUnique(plugins, 'repo', files.plugins);
 }
 
+function validateSkills(skills) {
+  const allowedKeys = new Set(['id', 'name', 'author', 'description', 'repo']);
+  for (const skill of skills) {
+    const label = `skill ${skill.id || '<missing id>'}`;
+    assertNoUnknownKeys(skill, allowedKeys, label);
+    assertString(skill.id, `${label}.id`, { pattern: /^[a-z0-9-]+$/ });
+    assertString(skill.name, `${label}.name`, { max: 80 });
+    assertString(skill.author, `${label}.author`, { max: 80 });
+    assertString(skill.description, `${label}.description`, { max: 250 });
+    assertString(skill.repo, `${label}.repo`, { pattern: /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/ });
+    if (!/[.?!)。？！）]$/.test(skill.description)) {
+      throw new Error(`${label}.description: should end with one of . ? ! ) 。 ？ ！ ）`);
+    }
+  }
+  assertUnique(skills, 'id', files.skills);
+  assertUnique(skills, 'name', files.skills);
+  assertUnique(skills, 'repo', files.skills);
+}
+
 function validateThemes(themes) {
   const allowedKeys = new Set(['name', 'author', 'repo', 'screenshot', 'modes', 'publish', 'legacy']);
   for (const theme of themes) {
@@ -122,15 +144,21 @@ function validateDesktopReleases(releases) {
 const plugins = readJsonArray(files.plugins);
 const removedPlugins = readJsonArray(files.removedPlugins);
 const deprecatedPlugins = readJsonArray(files.deprecatedPlugins);
+const skills = readJsonArray(files.skills);
+const removedSkills = readJsonArray(files.removedSkills);
+const deprecatedSkills = readJsonArray(files.deprecatedSkills);
 const themes = readJsonArray(files.themes);
 const removedThemes = readJsonArray(files.removedThemes);
 const desktopReleases = readJsonArray(files.desktopReleases);
 
 validatePlugins(plugins);
+validateSkills(skills);
 validateThemes(themes);
 validateDesktopReleases(desktopReleases);
 assertUnique(removedPlugins, 'id', files.removedPlugins);
 assertUnique(deprecatedPlugins, 'id', files.deprecatedPlugins);
+assertUnique(removedSkills, 'id', files.removedSkills);
+assertUnique(deprecatedSkills, 'id', files.deprecatedSkills);
 assertUnique(removedThemes, 'name', files.removedThemes);
 
 console.log('Registry validation passed.');

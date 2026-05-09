@@ -1,6 +1,6 @@
 # Thrive Developer Policy
 
-This policy applies to all plugins and themes listed in the Thrive marketplace.
+This policy applies to all plugins, skills, and themes listed in the Thrive marketplace.
 
 ## Core Rules
 
@@ -28,6 +28,20 @@ High-risk capabilities require a clear use case and may require manual approval:
 - `mcp.server`
 
 Plugins should request the smallest capability set needed for the feature.
+
+## Skill Policy
+
+Skills must be focused instruction packages built around a required `SKILL.md` file.
+
+Skill submissions must:
+
+- Solve one repeatable workflow.
+- Keep `SKILL.md` concise and move detailed material into support files.
+- Declare tool and runtime access in `SKILL.md`.
+- Avoid hidden installers, unrelated daemons, and undisclosed network calls.
+- Avoid broad write, shell, or network access unless it is essential and disclosed in README.
+
+Skills should start as instructions and references. Scripts are allowed only when they directly support the declared workflow and can be reviewed.
 
 ## Theme Policy
 

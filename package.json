@@ -6,6 +6,7 @@
   "scripts": {
     "validate": "node scripts/validate-registry.mjs",
     "validate:plugin-template": "cd templates/plugin-template && npm run validate",
+    "validate:skill-template": "cd templates/skill-template && npm run validate",
     "validate:pr": "node scripts/validate-pr-shape.mjs",
     "format": "prettier --write \"community*.json\" \"desktop-releases.json\""
   },

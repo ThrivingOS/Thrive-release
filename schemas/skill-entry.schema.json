@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/schemas/skill-entry.schema.json",
+  "title": "Thrive Community Skill Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "author", "description", "repo"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 250
+    },
+    "repo": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    }
+  }
+}

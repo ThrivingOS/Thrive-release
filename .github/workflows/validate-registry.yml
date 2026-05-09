@@ -16,3 +16,4 @@ jobs:
           node-version: 22
       - run: npm run validate
       - run: npm run validate:plugin-template
+      - run: npm run validate:skill-template

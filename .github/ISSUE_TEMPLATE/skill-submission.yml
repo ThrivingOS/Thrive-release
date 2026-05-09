@@ -1,0 +1,27 @@
+name: Skill submission help
+description: Ask for help before submitting a skill PR.
+title: "[Skill Submission]: "
+labels: ["skill", "submission"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Skill repository
+      description: GitHub owner/repo.
+      placeholder: owner/thrive-skill
+    validations:
+      required: true
+  - type: textarea
+    id: tools
+    attributes:
+      label: Tool and runtime access
+      description: List requested tools, runtime modes, scripts, and why each one is needed.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything maintainers should know.
+    validations:
+      required: false

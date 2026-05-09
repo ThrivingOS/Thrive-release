@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "community-plugins.json"
+      - "community-skills.json"
       - "community-css-themes.json"
       - "desktop-releases.json"
 
@@ -141,6 +142,142 @@ jobs:
                   await github.rest.licenses.getForRepo({ owner, repo });
                 } catch {
                   addWarning('Plugin repository does not include a detected license.');
+                }
+              }
+            }
+
+            const body = [...errors, ...warnings].join('\n');
+            if (body) await core.summary.addRaw(body).write();
+            if (errors.length) core.setFailed(errors.join('\n'));
+
+  validate-skill-entry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const errors = [];
+            const warnings = [];
+            const addError = (message) => errors.push(`:x: ${message}`);
+            const addWarning = (message) => warnings.push(`:warning: ${message}`);
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+            if (!files.some((file) => file.filename === 'community-skills.json')) return;
+            if (context.payload.pull_request.changed_files > 1) addError('Skill submissions should only modify `community-skills.json`.');
+            if (!context.payload.pull_request.maintainer_can_modify) {
+              addWarning('Maintainers should be allowed to edit this pull request. This speeds up review.');
+            }
+
+            function parseSkillFrontmatter(content) {
+              if (!content.startsWith('---\n')) return null;
+              const end = content.indexOf('\n---', 4);
+              if (end === -1) return null;
+              const raw = content.slice(4, end).trim();
+              const fields = {};
+              for (const line of raw.split('\n')) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+                const match = trimmed.match(/^([A-Za-z0-9_-]+):\s*(.*)$/);
+                if (!match) continue;
+                fields[match[1]] = String(match[2] || '').replace(/^['"]|['"]$/g, '').trim();
+              }
+              return fields;
+            }
+
+            let skills;
+            try {
+              skills = JSON.parse(fs.readFileSync('community-skills.json', 'utf8'));
+            } catch (error) {
+              addError(`Could not parse community-skills.json: ${error.message}`);
+            }
+            const skill = skills?.[skills.length - 1];
+            if (!skill) addError('No skill entry found.');
+
+            if (skill) {
+              const validKeys = ['id', 'name', 'description', 'author', 'repo'];
+              for (const key of validKeys) {
+                if (!Object.prototype.hasOwnProperty.call(skill, key)) addError(`Missing required property \`${key}\`.`);
+              }
+              for (const key of Object.keys(skill)) {
+                if (!validKeys.includes(key)) addError(`Invalid property \`${key}\`. The registry format is intentionally minimal.`);
+              }
+
+              if (skill.id && !/^[a-z0-9-]+$/.test(skill.id)) addError('Skill ID must use lowercase letters, digits, and dashes only.');
+              if (skill.id?.toLowerCase().includes('thrive')) addError('Do not use `thrive` in the skill ID.');
+              if (skill.id?.toLowerCase().endsWith('skill')) addWarning('Avoid ending the skill ID with `skill`.');
+              if (skill.name?.toLowerCase().includes('thrive')) addError('Do not use `Thrive` in the skill name.');
+              if (skill.name?.toLowerCase().endsWith('skill')) addWarning('Avoid ending the skill name with `Skill`.');
+              if (skill.author && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(skill.author)) addWarning('Avoid putting an email address in the author field.');
+              if (skill.description && !/[.?!)。？！）]$/.test(skill.description)) addError('Description should end with one of . ? ! ) 。 ？ ！ ）');
+              if (skill.description?.length > 250) addError('Description should be short and under 250 characters.');
+
+              if (skills.filter((item) => item.id === skill.id).length > 1) addError(`A skill with id \`${skill.id}\` already exists.`);
+              if (skills.filter((item) => item.name === skill.name).length > 1) addError(`A skill with name \`${skill.name}\` already exists.`);
+              if (skills.filter((item) => item.repo === skill.repo).length > 1) addError(`An entry for repo \`${skill.repo}\` already exists.`);
+
+              const repoInfo = String(skill.repo || '').split('/');
+              if (repoInfo.length !== 2) {
+                addError(`Invalid repo field: ${skill.repo}`);
+              } else {
+                const [owner, repo] = repoInfo;
+                const author = context.payload.pull_request.user.login;
+                if (owner.toLowerCase() !== author.toLowerCase()) {
+                  try {
+                    await github.rest.orgs.checkMembershipForUser({ org: owner, username: author });
+                  } catch {
+                    addError('The skill repo owner must be the PR author or an organization where the author is a public member.');
+                  }
+                }
+
+                try {
+                  const repository = await github.rest.repos.get({ owner, repo });
+                  if (!repository.data.has_issues) addWarning('The skill repository does not have issues enabled.');
+                } catch {
+                  addError(`Could not access skill repository \`${skill.repo}\`.`);
+                }
+
+                let frontmatter = null;
+                try {
+                  const skillFile = await github.rest.repos.getContent({ owner, repo, path: 'SKILL.md' });
+                  const content = Buffer.from(skillFile.data.content, 'base64').toString('utf8');
+                  frontmatter = parseSkillFrontmatter(content);
+                  if (!frontmatter) addError('SKILL.md must start with YAML frontmatter.');
+                } catch {
+                  addError('Skill repository must contain `SKILL.md`.');
+                }
+
+                if (frontmatter) {
+                  if (frontmatter.name !== skill.id) addError(`Skill ID mismatch: registry has \`${skill.id}\`, SKILL.md has \`${frontmatter.name || '<missing>'}\`.`);
+                  if (frontmatter.description && frontmatter.description !== skill.description) addWarning('Description differs from SKILL.md description.');
+                  if (frontmatter.version && !/^[0-9A-Za-z._+-]+$/.test(String(frontmatter.version))) addError('SKILL.md version is invalid.');
+                  if (frontmatter.version) {
+                    try {
+                      await github.rest.repos.getReleaseByTag({ owner, repo, tag: frontmatter.version });
+                    } catch {
+                      addWarning('No GitHub release found for the SKILL.md version yet.');
+                    }
+                  }
+                }
+
+                try {
+                  await github.rest.repos.getContent({ owner, repo, path: 'README.md' });
+                } catch {
+                  addError('Skill repository must contain README.md.');
+                }
+
+                try {
+                  await github.rest.licenses.getForRepo({ owner, repo });
+                } catch {
+                  addWarning('Skill repository does not include a detected license.');
                 }
               }
             }

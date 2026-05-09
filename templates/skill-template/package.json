@@ -1,0 +1,13 @@
+{
+  "name": "thrive-skill-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-skill.mjs",
+    "pack": "node scripts/pack-skill.mjs"
+  },
+  "engines": {
+    "node": ">=22 <23"
+  }
+}

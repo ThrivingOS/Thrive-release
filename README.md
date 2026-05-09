@@ -1,6 +1,6 @@
 # Thrive Release Registry
 
-This repository hosts public releases of Thrive and the community plugin and theme directories.
+This repository hosts public releases of Thrive and the community plugin, skill, and theme directories.
 
 Thrive is not open source software, and this repository does not contain the source code of Thrive.
 
@@ -10,6 +10,7 @@ The Thrive app reads these long-lived registry files directly:
 
 ```text
 https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/community-plugins.json
+https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/community-skills.json
 https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/community-css-themes.json
 https://raw.githubusercontent.com/ThrivingOS/Thrive-release/main/desktop-releases.json
 ```
@@ -19,25 +20,30 @@ Additional administrative files:
 ```text
 community-plugins-removed.json
 community-plugin-deprecation.json
+community-skills-removed.json
+community-skill-deprecation.json
 community-css-themes-removed.json
 ```
 
-## Submit Your Plugin Or Theme
+## Submit Your Plugin, Skill, Or Theme
 
 Open a pull request and append your entry to the end of the matching JSON file.
 
 - Plugins: `community-plugins.json`
+- Skills: `community-skills.json`
 - Themes: `community-css-themes.json`
 
-Read [SUBMIT_PLUGIN.md](SUBMIT_PLUGIN.md), [SUBMIT_THEME.md](SUBMIT_THEME.md), and [DEVELOPER_POLICY.md](DEVELOPER_POLICY.md) before submitting.
+Read [SUBMIT_PLUGIN.md](SUBMIT_PLUGIN.md), [SUBMIT_SKILL.md](SUBMIT_SKILL.md), [SUBMIT_THEME.md](SUBMIT_THEME.md), and [DEVELOPER_POLICY.md](DEVELOPER_POLICY.md) before submitting.
 
 Start new plugins from:
 
 ```text
 templates/plugin-template/
+templates/skill-template/
 ```
 
 Plugin PR requirements are defined in [PLUGIN_PR_STANDARD.md](PLUGIN_PR_STANDARD.md).
+Skill PR requirements are defined in [SKILL_PR_STANDARD.md](SKILL_PR_STANDARD.md).
 
 ## Community Plugin Format
 
@@ -62,6 +68,30 @@ Fields:
 - `repo`: GitHub repository identifier in `owner/repo` format.
 
 When a user opens your plugin detail page, Thrive pulls the plugin manifest and README from your GitHub repository. Installable files are fetched from your GitHub releases.
+
+## Community Skill Format
+
+To add your skill, append one entry to `community-skills.json`:
+
+```json
+{
+  "id": "example-skill",
+  "name": "Example Skill",
+  "author": "Your Name",
+  "description": "A short description of what the skill does and when Thrive should use it.",
+  "repo": "owner/example-skill"
+}
+```
+
+Fields:
+
+- `id`: unique skill ID. It must match the `name` field in the skill repository's `SKILL.md`.
+- `name`: user-facing skill name.
+- `author`: author name for display.
+- `description`: short searchable description that explains what the skill does and when Thrive should use it.
+- `repo`: GitHub repository identifier in `owner/repo` format.
+
+When a user opens your skill detail page, Thrive pulls `SKILL.md` and README from your GitHub repository. Installable files are fetched from your GitHub releases.
 
 ## Community Theme Format
 
@@ -90,9 +120,11 @@ Fields:
 
 ```text
 community-plugins.json              Community plugin directory.
+community-skills.json               Community skill directory.
 community-css-themes.json           Community theme directory.
 desktop-releases.json               Desktop release metadata.
 templates/plugin-template/          Starter plugin template.
+templates/skill-template/           Starter skill template.
 review/                             Human review checklists and permission policy.
 schemas/                            JSON schemas for documentation and tooling.
 scripts/                            Local validation scripts.
@@ -104,6 +136,7 @@ scripts/                            Local validation scripts.
 ```bash
 npm run validate
 npm run validate:plugin-template
+npm run validate:skill-template
 npm run validate:pr
 ```
 
